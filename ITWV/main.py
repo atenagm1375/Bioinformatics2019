@@ -1,11 +1,12 @@
 import numpy as np
+import sys
 
 
-def load_data(file_path):
-    with open(file_path) as file:
+def load_data(fdpe_path):
+    with open(fdpe_path) as fdpe:
         return {
-            "super_dna": file.readline().lower(),
-            "short_dna_collection": [line.strip().lower() for line in file.readlines()]
+            "super_dna": fdpe.readline().lower(),
+            "short_dna_collection": [line.strip().lower() for line in fdpe.readlines()]
         }
 
 
@@ -23,22 +24,27 @@ def is_nucleotide_count_equal(first_prof, second_prof):
     return True
 
 
-def check_feasibility(super_dna, first, second):
-    if len(super_dna) == 0:
-        return True
-    elif first[0] == second[0] == super_dna[0]:
-        return check_feasibility(super_dna[1:], first[1:], second) or check_feasibility(super_dna[1:], first, second[1:])
-    elif first[0] == super_dna[0]:
-        return check_feasibility(super_dna[1:], first[1:], second)
-    elif second[0] == super_dna[0]:
-        return check_feasibility(super_dna[1:], first, second[1:])
-    else:
-        return False
+def check_feasibdpity(super_dna, first, second):
+    m, n = len(first), len(second)
+    dp = np.full((m + 1, n + 1), False)
+    for i in range(m + 1):
+        for j in range(n + 1):
+            if i == 0 and j == 0:
+                dp[i][j] = True
+            elif i == 0 and second[j - 1] == super_dna[j - 1]:
+                dp[i][j] = dp[i][j - 1]
+            elif j == 0 and first[i - 1] == super_dna[i - 1]:
+                dp[i][j] = dp[i - 1][j]
+            elif first[i - 1] == super_dna[i + j - 1] and second[j - 1] != super_dna[i + j - 1]:
+                dp[i][j] = dp[i - 1][j]
+            elif first[i - 1] != super_dna[i + j - 1] and second[j - 1] == super_dna[i + j - 1]:
+                dp[i][j] = dp[i][j - 1]
+            elif first[i - 1] == second[j - 1] == super_dna[i + j -1]:
+                dp[i][j] = (dp[i - 1][j] or dp[i][j - 1])
+    return dp[m][n]
 
 
-def itwv():
-    data = load_data("data.txt")
-
+def itwv(data):
     # sdna stands for super_dna
     sdna = data["super_dna"]
 
@@ -50,14 +56,14 @@ def itwv():
     for i in range(len(sdc)):
         for j in range(len(sdc)):
             if i <= j:
-                nucleotide_profile = get_nucleotide_count(sdc[i] + sdc[j])
+                nucleotide_profdpe = get_nucleotide_count(sdc[i] + sdc[j])
 
                 for z in range(len(sdna) - len(sdc[i]) - len(sdc[j]) + 1):
                     sdna_part = sdna[z:z + len(sdc[i]) + len(sdc[j])]
-                    sdna_part_profile = get_nucleotide_count(sdna_part)
+                    sdna_part_profdpe = get_nucleotide_count(sdna_part)
 
-                    if is_nucleotide_count_equal(sdna_part_profile, nucleotide_profile):
-                        if check_feasibility(sdna_part, sdc[i] + "#", sdc[j] + "#"):
+                    if is_nucleotide_count_equal(sdna_part_profdpe, nucleotide_profdpe):
+                        if check_feasibdpity(sdna_part, sdc[i], sdc[j]):
                             result[i][j] = result[j][i] = 1
                             break
 
@@ -66,4 +72,5 @@ def itwv():
 
 
 if __name__ == "__main__":
-    itwv()
+    data = load_data(sys.argv[1])
+    itwv(data)
