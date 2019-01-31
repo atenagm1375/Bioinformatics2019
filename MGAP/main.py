@@ -40,5 +40,6 @@ def load_data(path):
     return dna_list
 
 
-dna_sequences = load_data(sys.argv[1])
-print(get_max_gap_count(*dna_sequences))
+if __name__ == "__main__":
+    dna_sequences = load_data(sys.argv[1])
+    print(get_max_gap_count(*dna_sequences))

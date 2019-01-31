@@ -29,4 +29,4 @@ Run the code by `python3 main.py data.txt` where `data.txt` is the file containi
 
 #### More:
 
-To toggle between normal LCS and space-efficient LCS solutions, open `main.py`, comment line 126 and uncomment line 127 or vice versa. Line 126 runs the normal LCS while line 127 runs the space\-efficient version.
+To toggle between normal LCS and space-efficient LCS solutions, open `main.py`, comment line 127 and uncomment line 128 or vice versa. Line 127 runs the normal LCS while line 128 runs the space\-efficient version.

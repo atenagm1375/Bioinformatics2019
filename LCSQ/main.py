@@ -122,6 +122,7 @@ def load_data(path):
     return dna_list
 
 
-dna_sequences = load_data(sys.argv[1])
-print(longest_common_subsequence(dna_sequences))
-# print(space_efficient_lcs(dna_sequences))
+if __name__ == "__main__":
+    dna_sequences = load_data(sys.argv[1])
+    print(longest_common_subsequence(dna_sequences))
+    # print(space_efficient_lcs(dna_sequences))
